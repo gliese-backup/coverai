@@ -1,5 +1,7 @@
 import "./global.css";
-import Link from "next/link";
+
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 export const metadata = {
   title: "Next.js",
@@ -8,27 +10,15 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html
+      lang="en"
+      data-theme="business"
+    >
       <body>
         {/* Header */}
-        <div className="navbar bg-base-100 shadow-sm">
-          <div className="flex-1">
-            <Link
-              href="/"
-              className="btn btn-ghost text-xl"
-            >
-              CoverAI
-            </Link>
-          </div>
-          <div className="flex-none">
-            <ul className="menu menu-horizontal px-1">
-              <li>
-                <Link href="/login">Login</Link>
-              </li>
-            </ul>
-          </div>
-        </div>
+        <Header />
         {children}
+        <Footer />
       </body>
     </html>
   );
