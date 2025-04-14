@@ -1,8 +1,13 @@
-import Link from "next/link";
+"use client";
 
+import { useActionState } from "react";
 import { register } from "@/actions/userController";
 
 export default function Page() {
+  const [state, formAction] = useActionState(register, {});
+
+  console.log(state);
+
   return (
     <div className="min-h-[85vh] container mx-auto grid grid-cols-1 md:grid-cols-2 px-3">
       <div className="flex items-center">
@@ -15,7 +20,7 @@ export default function Page() {
       {/* Register Form */}
       <div className="flex items-start md:items-center">
         <form
-          action="#"
+          action={formAction}
           method="POST"
           className="w-full flex flex-col items-start"
         >
