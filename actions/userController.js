@@ -1,6 +1,7 @@
 "use server";
 
 import { isAlphaNumeric } from "@/lib/utils";
+import { getCollection } from "@/lib/db";
 
 export const register = async function (prevState, formData) {
   const errors = {}; // username: , password:
@@ -25,7 +26,15 @@ export const register = async function (prevState, formData) {
   if (ourUser.username == "") errors.username = "Username must not be empty.";
   if (!isAlphaNumeric(ourUser.username))
     errors.username = "Username can't contain special characters.";
-  // TODO: Check if the user is not already present in our database
+  // Check if the user is not already present in our database
+  const usersCollection = await getCollection("users");
+  const userInQuestion = usersCollection.findOne({
+    username: ourUser.username,
+  });
+
+  if (userInQuestion) {
+    errors.username = "Username already exists.";
+  }
 
   if (ourUser.password.length < 6)
     errors.password = "Password must be atleast 6 characters.";
@@ -41,6 +50,8 @@ export const register = async function (prevState, formData) {
   }
 
   //  Step 2: Save the user in to our database
+  usersCollection.insertOne(ourUser);
+
   //  Step 3: Send a cookie back for login session
 
   return { success: true };
