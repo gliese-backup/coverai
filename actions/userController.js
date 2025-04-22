@@ -1,27 +1,41 @@
 "use server";
 
-export const register = async function (prevState, formData) {
-  const errors = [];
+import { isAlphaNumeric } from "@/lib/utils";
 
-  const data = {
+export const register = async function (prevState, formData) {
+  const errors = {}; // username: , password:
+
+  const ourUser = {
     username: formData.get("username"),
     password: formData.get("password"),
   };
 
-  console.log(data);
+  console.log(ourUser);
 
   //  Step 1: Validate the incoming user data
-  if (typeof data.username !== "string") data.username = "";
-  if (typeof data.password !== "string") data.password = "";
+  if (typeof ourUser.username !== "string") ourUser.username = "";
+  if (typeof ourUser.password !== "string") ourUser.password = "";
 
-  data.username = data.username.trim();
+  ourUser.username = ourUser.username.trim();
 
-  if (data.username.length < 3)
-    errors.push("Username must be atleast 3 characters");
+  if (ourUser.username.length < 3)
+    errors.username = "Username must be atleast 3 characters.";
+  if (ourUser.username > 15)
+    errors.username = "Username can not exceed 15 characters.";
+  if (ourUser.username == "") errors.username = "Username must not be empty.";
+  if (!isAlphaNumeric(ourUser.username))
+    errors.username = "Username can't contain special characters.";
+  // TODO: Check if the user is not already present in our database
 
-  if (errors.length) {
+  if (ourUser.password.length < 6)
+    errors.password = "Password must be atleast 6 characters.";
+  if (ourUser.password > 20)
+    errors.password = "Password can not exceed 20 characters.";
+  if (ourUser.password == "") errors.password = "Password must not be empty.";
+
+  if (errors.username || errors.password) {
     return {
-      errors: errors,
+      errors,
       success: false,
     };
   }

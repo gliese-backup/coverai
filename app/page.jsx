@@ -1,13 +1,8 @@
 "use client";
 
-import { useActionState } from "react";
-import { register } from "@/actions/userController";
+import RegisterForm from "@/components/RegisterForm";
 
 export default function Page() {
-  const [state, formAction] = useActionState(register, {});
-
-  console.log(state);
-
   return (
     <div className="min-h-[85vh] container mx-auto grid grid-cols-1 md:grid-cols-2 px-3">
       <div className="flex items-center">
@@ -19,38 +14,7 @@ export default function Page() {
 
       {/* Register Form */}
       <div className="flex items-start md:items-center">
-        <form
-          action={formAction}
-          method="POST"
-          className="w-full flex flex-col items-start"
-        >
-          <input
-            type="text"
-            name="username"
-            placeholder="Username"
-            className="input"
-            autoComplete="off"
-            required
-          />
-          <br />
-
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            className="input"
-            autoComplete="off"
-            required
-          />
-          <br />
-
-          <button
-            type="submit"
-            className="btn"
-          >
-            Register
-          </button>
-        </form>
+        <RegisterForm />
       </div>
     </div>
   );
