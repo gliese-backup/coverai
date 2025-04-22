@@ -1,8 +1,10 @@
 "use server";
 
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 import { isAlphaNumeric } from "@/lib/utils";
 import { getCollection } from "@/lib/db";
+import { cookies } from "next/headers";
 
 export const register = async function (prevState, formData) {
   const errors = {}; // username: , password:
@@ -56,9 +58,23 @@ export const register = async function (prevState, formData) {
   const salt = bcrypt.genSaltSync(10);
   ourUser.password = bcrypt.hashSync(ourUser.password, salt);
 
-  usersCollection.insertOne(ourUser);
+  const newUser = await usersCollection.insertOne(ourUser);
+  const userId = newUser.insertedId.toString();
 
   //  Step 3: Send a cookie back for login session
+
+  // our JWT token value
+  const jwtTokenValue = jwt.sign(
+    { userId: userId, exp: Math.floor(Date.now() / 1000 + 60 * 60 * 24) },
+    process.env.JWTSECRET
+  );
+
+  (await cookies()).set("cover", jwtTokenValue, {
+    httpOnly: true,
+    sameSite: "true",
+    secure: true,
+    maxAge: 60 * 60 * 24,
+  });
 
   return { success: true };
 };
