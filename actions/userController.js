@@ -1,5 +1,6 @@
 "use server";
 
+import bcrypt from "bcrypt";
 import { isAlphaNumeric } from "@/lib/utils";
 import { getCollection } from "@/lib/db";
 
@@ -28,7 +29,7 @@ export const register = async function (prevState, formData) {
     errors.username = "Username can't contain special characters.";
   // Check if the user is not already present in our database
   const usersCollection = await getCollection("users");
-  const userInQuestion = usersCollection.findOne({
+  const userInQuestion = await usersCollection.findOne({
     username: ourUser.username,
   });
 
@@ -50,6 +51,11 @@ export const register = async function (prevState, formData) {
   }
 
   //  Step 2: Save the user in to our database
+
+  // Hash the password
+  const salt = bcrypt.genSaltSync(10);
+  ourUser.password = bcrypt.hashSync(ourUser.password, salt);
+
   usersCollection.insertOne(ourUser);
 
   //  Step 3: Send a cookie back for login session
