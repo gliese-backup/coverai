@@ -5,6 +5,12 @@ import jwt from "jsonwebtoken";
 import { isAlphaNumeric } from "@/lib/utils";
 import { getCollection } from "@/lib/db";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+
+export const logout = async function () {
+  cookies().delete("cover");
+  redirect("/");
+};
 
 export const register = async function (prevState, formData) {
   const errors = {}; // username: , password:
