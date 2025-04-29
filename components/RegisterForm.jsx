@@ -1,3 +1,5 @@
+"use client";
+
 import { useActionState } from "react";
 import { register } from "@/actions/userController";
 import Alert from "./Alert";
@@ -10,7 +12,6 @@ export default function RegisterForm() {
   return (
     <form
       action={formAction}
-      method="POST"
       className="w-full flex flex-col items-start"
     >
       <input
@@ -44,7 +45,7 @@ export default function RegisterForm() {
         type="submit"
         className="btn"
       >
-        Register
+        Create Account
       </button>
     </form>
   );
