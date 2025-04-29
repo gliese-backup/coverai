@@ -7,8 +7,6 @@ import Alert from "./Alert";
 export default function RegisterForm() {
   const [formState, formAction] = useActionState(register, {});
 
-  console.log(formState);
-
   return (
     <form
       action={formAction}
