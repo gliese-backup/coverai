@@ -7,11 +7,6 @@ import { getCollection } from "@/lib/db";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
-export const logout = async function () {
-  cookies().delete("cover");
-  redirect("/");
-};
-
 export const register = async function (prevState, formData) {
   const errors = {}; // username: , password:
 
@@ -83,4 +78,59 @@ export const register = async function (prevState, formData) {
   });
 
   return { success: true };
+};
+
+export const login = async function (prevState, formData) {
+  const failObject = {
+    success: false,
+    message: "Invalid username / password.",
+  };
+
+  const ourUser = {
+    username: formData.get("username"),
+    password: formData.get("password"),
+  };
+
+  if (typeof ourUser.username != "string") ourUser.username = "";
+  if (typeof ourUser.password != "string") ourUser.password = "";
+
+  const usersCollection = await getCollection("users");
+  const user = await usersCollection.findOne({
+    username: ourUser.username,
+  });
+
+  console.log(user);
+
+  if (!user) {
+    return failObject;
+  }
+
+  const passwordMatch = bcrypt.compareSync(ourUser.password, user.password);
+  if (!passwordMatch) {
+    return failObject;
+  }
+
+  // Send back a cookie
+
+  // our JWT token value
+  const jwtTokenValue = jwt.sign(
+    { userId: user._id, exp: Math.floor(Date.now() / 1000 + 60 * 60 * 24) },
+    process.env.JWTSECRET
+  );
+
+  (await cookies()).set("cover", jwtTokenValue, {
+    httpOnly: true,
+    sameSite: "true",
+    secure: true,
+    maxAge: 60 * 60 * 24,
+  });
+
+  redirect("/");
+
+  return { success: true };
+};
+
+export const logout = async function () {
+  cookies().delete("cover");
+  redirect("/");
 };
