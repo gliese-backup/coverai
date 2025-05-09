@@ -13,7 +13,7 @@ export default function RootLayout({ children }) {
   return (
     <html
       lang="en"
-      data-theme="business"
+      data-theme="cupcake"
     >
       <body>
         {/* Header */}

@@ -7,7 +7,10 @@ export default async function Page() {
 
   return (
     <div className="min-h-[85vh] container mx-auto grid grid-cols-1 md:grid-cols-2 px-3">
-      {user && <Dashboard />}
+      {/* If logged in */}
+      {user && <Dashboard user={user} />}
+
+      {/* If logged out */}
       {!user && (
         <>
           <div className="flex items-center">
